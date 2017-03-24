@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'rubocopular'
+require 'pry'
+
+old_prompt = Pry.config.prompt
+Pry.config.prompt = [
+  proc { |*a| old_prompt.first.call(*a).gsub(/.*>/, '>') },
+  proc { |*a| old_prompt.second.call(*a) }
+]
+
+Pry.print { |_, res| puts res }
+
+puts <<-EXAMPLES
+Rubocopular.node(1) => s(:int, 1)
+Rubocopular.node('1') => s(:int, 1) # to_s before eval
+Rubocopular.node("'a string'")
+Rubocopular.node({a: {hash: 'lol'}}) => s(:hash, s(:pair, s(:sym, :a), s(:hash, s(:pair, s(:sym, :hash), s(:str, "lol")))))
+EXAMPLES
+
+include RuboCop::AST::Sexp
+
+Pry.start
