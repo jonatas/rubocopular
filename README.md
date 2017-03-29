@@ -92,7 +92,31 @@ Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...
 => [[:b], [:c], :d, [:e], [:f]]
 ```
 
-Keep in mind `...` is anything and `_` is only something.
+Keep in mind `...` can be anything and `_` is only one thing.
+
+You can also use `{}` to wrap different nodes
+
+```ruby
+> Rubocopular.test('(${def kwbegin} ... (rescue _ $...))','def a ; rescue => e; end')
+=> [:def, [s(:resbody, nil,
+  s(:lvasgn, :e), nil), nil]]
+> Rubocopular.test('(${def kwbegin} ... (rescue _ $...))','begin ; rescue => e; end')
+=> [:kwbegin, [s(:resbody, nil,
+  s(:lvasgn, :e), nil), nil]]
+```
+
+In this case the `...` was used only for `:def` but it still needed.
+
+```ruby
+> Rubocopular.test('(${def kwbegin} _ _ (rescue _ $...))','def a ; rescue => e; end')
+=> [:def, [s(:resbody, nil,
+  s(:lvasgn, :e), nil), nil]]
+> Rubocopular.test('(${def kwbegin} _ _ (rescue _ $...))','begin ; rescue => e; end')
+=> nil
+```
+
+You can remind that `...` is anything and it includes nothing. While `_` is always one thing.
+
 
 ## Development
 
