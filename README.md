@@ -47,6 +47,21 @@ You can test your matchers and inspect them:
     s(:send, nil, :a), :b), :c), :d]
 ```
 
+The inspect is just wrapping the `_` and `...` into captures and use `.test`
+behind the scenes:
+
+```ruby
+> Rubocopular.test('(:def _method _args (send (send (send _ $...) ...) ... ) )', 'def a; b.c.d.e.f end')
+=> [:d]
+> Rubocopular.test('(:def _method _args (send (send (send (send _ $...) ...) ...) ... ) )', 'def a; b.c.d.e.f end')
+=> [:c]
+> Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...) ...) ...) ... ) )', 'def a; b.c.d.e.f end')
+=> [[:b], [:c]]
+> Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...) $...) ...) ... ) )', 'def a; b.c.d.e.f end')
+=> [[:b], [:c], [:d]]
+> Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...) $...) $...) $... ) )', 'def a; b.c.d.e.f end')
+=> [[:b], [:c], [:d], [:e], [:f]]
+```
 
 ## Development
 
@@ -58,8 +73,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rubocopular. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/jonatas/rubocopular. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
