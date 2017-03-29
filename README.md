@@ -38,6 +38,21 @@ The `node` method will allow you to transform your code into `AST`.
       s(:send, nil, :a), :b), :c), :d)
 ```
 
+You can also navigate on children nodes:
+
+```ruby
+> nodes = Rubocopular.node('class A; a; b; c -> {} end').children.last
+=> s(:begin,
+  s(:send, nil, :a),
+  s(:send, nil, :b),
+  s(:send, nil, :c,
+    s(:block,
+      s(:send, nil, :lambda),
+      s(:args), nil)))
+> nodes.children.map(&:method_name)
+=> [:a, :b, :c]
+```
+
 You can test your matchers and inspect them:
 
 ```ruby
@@ -47,8 +62,7 @@ You can test your matchers and inspect them:
     s(:send, nil, :a), :b), :c), :d]
 ```
 
-The inspect is just wrapping the `_` and `...` into captures and use `.test`
-behind the scenes:
+The `inspect` is just wrapping the `_` and `...` to call `.test` method:
 
 ```ruby
 > Rubocopular.test('(:def _method _args (send (send (send _ $...) ...) ... ) )', 'def a; b.c.d.e.f end')
@@ -61,7 +75,24 @@ behind the scenes:
 => [[:b], [:c], [:d]]
 > Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...) $...) $...) $... ) )', 'def a; b.c.d.e.f end')
 => [[:b], [:c], [:d], [:e], [:f]]
+> Rubocopular.test('(:def $_ _args (send (send (send (send (send _ $_) $_) $_) $_) $_ ) )', 'def a; b.c.d.e.f end')
+=> [:a, :b, :c, :d, :e, :f]
+> Rubocopular.inspect('(:def _ (:args) (send (send (send (send (send _ _) _) _) _) _ ) )', 'def a; b.c.d.e.f end')
+=> [:a, nil, :b, :c, :d, :e, :f]
 ```
+
+Check that the examples uses more `...` than `_` to allow more flexibility on the syntax:
+
+```ruby
+> Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...) $_) $...) $... ) )', 'def a; b.c.d.e(param).f end')
+=> [[:b], [:c], :d, [:e, s(:send, nil, :param)], [:f]]
+> Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...) $_) $...) $... ) )', 'def a; b.c.d(param).e.f end')
+=> nil
+Rubocopular.test('(:def _method _args (send (send (send (send (send _ $...) $...) $_) $...) $... ) )', 'def a; b.c.d.e.f end')
+=> [[:b], [:c], :d, [:e], [:f]]
+```
+
+Keep in mind `...` is anything and `_` is only something.
 
 ## Development
 
