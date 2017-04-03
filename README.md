@@ -31,7 +31,12 @@ The `node` method will allow you to transform your code into `AST`.
 => s(:def, :method,
   s(:args),
   s(:send, nil, :body))
-> Rubocopular.node("a.b.c.d")
+```
+
+If you're using `bin/console` you can also call `node` or `test` directly.
+
+```
+> node("a.b.c.d")
 => s(:send,
   s(:send,
     s(:send,

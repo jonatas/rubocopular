@@ -21,4 +21,13 @@ EXAMPLES
 
 include RuboCop::AST::Sexp
 
+
+def node code
+  Rubocopular.node code
+end
+
+def test pattern, code
+  Rubocopular.test pattern, code
+end
+
 Pry.start
