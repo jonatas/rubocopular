@@ -47,11 +47,6 @@ RSpec.describe Rubocopular do
         it { is_expected.to eq  [s(:send, s(:send, s(:send, nil, :b), :c), :d), :e] }
       end
 
-      describe 'last method name' do
-        let(:pattern) { '(:def _method _args (send (send $_ ...) ... ) )' }
-        it { is_expected.to eq  [:f] }
-      end
-
       describe 'penultimate method name' do
         let(:pattern) { '(:def _method _args (send (send _ $...) ... ) )' }
         it { is_expected.to eq  [:e] }
@@ -59,11 +54,6 @@ RSpec.describe Rubocopular do
 
       describe '3 levels up' do
         let(:pattern) { '(:def _method _args (send (send (send _ $...) ...) ... ) )' }
-        it { is_expected.to eq  [:d] }
-      end
-
-      describe '4 levels up' do
-        let(:pattern) { '(:def _method _args (send (send (send (send _ $...) ...) ...) ... ) )' }
         it { is_expected.to eq  [:d] }
       end
 

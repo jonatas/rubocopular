@@ -1,13 +1,9 @@
 require 'rubocopular/version'
 require 'rubocop'
-require 'parser/current'
 
 module Rubocopular
   def self.node(code)
-    buffer = Parser::Source::Buffer.new('')
-    buffer.source = code.to_s
-    builder = RuboCop::AST::Builder.new
-    Parser::CurrentRuby.new(builder).parse(buffer)
+    RuboCop::ProcessedSource.new(code.to_s, 2.3).ast
   end
 
   def self.test(pattern, code)
