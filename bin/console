@@ -12,15 +12,7 @@ Pry.config.prompt = [
 
 Pry.print { |_, res| puts res }
 
-puts <<-EXAMPLES
-Rubocopular.node(1) => s(:int, 1)
-Rubocopular.node('1') => s(:int, 1) # to_s before eval
-Rubocopular.node("'a string'")
-Rubocopular.node({a: {hash: 'lol'}}) => s(:hash, s(:pair, s(:sym, :a), s(:hash, s(:pair, s(:sym, :hash), s(:str, "lol")))))
-EXAMPLES
-
 include RuboCop::AST::Sexp
-
 
 def node code
   Rubocopular.node code
