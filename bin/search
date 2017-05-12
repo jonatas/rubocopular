@@ -12,8 +12,7 @@ include RuboCop::AST::Traversal
 def match pattern, node
   match = Rubocopular.test(pattern, node)
   if match
-    puts CodeRay.scan(node.source, :ruby).term
-    puts("---", "[ captures ]", "---", *match, "---") if match != true
+    puts CodeRay.scan(match == true ? node.source : match.inspect, :ruby).term
   else
     unless node.children.empty?
       node.children.each{|e| match(pattern, e) if e && e.is_a?(RuboCop::AST::Node)}
