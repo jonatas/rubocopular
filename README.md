@@ -11,7 +11,7 @@ cd rubocopular
 bin/setup
 ```
 
-## Usage
+## Usage of `bin/console`
 
 Try run `bin/console` for an interactive prompt that will allow you to experiment.
 
@@ -122,6 +122,37 @@ In this case the `...` was used only for `:def` but it still needed.
 
 You can remind that `...` is anything and it includes nothing. While `_` is always one thing.
 
+## Usage of `bin/search`
+
+You can also do like a "grep" using `bin/search`:
+
+Trying it in this project:
+
+    $ bin/search '(const ... )' 'lib/*.rb'                                                                                                                      11:56:17
+
+It will output something like:
+
+```
+Rubocopular
+RuboCop::ProcessedSource
+String
+RuboCop::NodePattern
+RuboCop::NodePattern
+```
+
+It prints nodes that matches with the current code:
+
+    $ bin/search '(lvar ... )' 'lib/*.rb'                                                                                                                       11:56:23
+
+```
+code
+code
+code
+pattern
+code
+pattern
+code
+```
 
 ## Development
 

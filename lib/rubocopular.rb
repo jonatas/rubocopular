@@ -1,5 +1,6 @@
 require 'rubocopular/version'
 require 'rubocop'
+require 'coderay'
 
 module Rubocopular
   def self.node(code)
@@ -7,7 +8,8 @@ module Rubocopular
   end
 
   def self.test(pattern, code)
-    RuboCop::NodePattern.new(pattern).match(node(code))
+    code = node(code) if code.is_a?(String)
+    RuboCop::NodePattern.new(pattern).match(code)
   end
 
   def self.inspect(pattern, code)
