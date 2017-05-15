@@ -4,24 +4,37 @@ require 'bundler/setup'
 require 'rubocopular'
 
 pattern = ARGV[0]
-dir = ARGV[1]
+dir = ARGV[1] || '**/*.rb'
 
 include RuboCop::AST::Traversal
-
 
 def match pattern, node
   match = Rubocopular.test(pattern, node)
   if match
-    puts CodeRay.scan(match == true ? node.source : match.inspect, :ruby).term
+    match == true ? node : [match, node]
   else
     unless node.children.empty?
-      node.children.each{|e| match(pattern, e) if e && e.is_a?(RuboCop::AST::Node)}
+      node.children.grep(RuboCop::AST::Node).flat_map{|e| match(pattern, e) }.compact
     end
   end
 end
-Dir[dir].each do |file|
-  code = IO.read(file)
-  node = Rubocopular.node(code)
-  match(pattern, node)
+
+def line_and_code(result)
+  if result.is_a?(RuboCop::AST::Node)
+    range = result.source_range
+    result = result.source
+  else
+    result, node = result
+    range = node.source_range
+  end
+  [ range.line, " #{CodeRay.scan(result, :ruby).term}"]
 end
 
+Dir[dir].each do |file|
+  processed_source = Rubocopular.parse_source(file)
+  results = match(pattern, processed_source.ast)
+  results.each do |result|
+    line = [file, *line_and_code(result)]
+    puts line.join(":")
+  end
+end
