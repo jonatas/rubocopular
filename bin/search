@@ -4,12 +4,12 @@ require 'bundler/setup'
 require 'rubocopular'
 
 pattern = ARGV[0]
-dir = ARGV[1] || '**/*.rb'
+files = ARGV[1..-1] || Dir['**/*.rb']
 
 include RuboCop::AST::Traversal
 
 def match pattern, node
-  match = Rubocopular.test(pattern, node)
+  match = pattern.match( node)
   if match
     match == true ? node : [match, node]
   else
@@ -30,7 +30,9 @@ def line_and_code(result)
   [ range.line, " #{CodeRay.scan(result, :ruby).term}"]
 end
 
-Dir[dir].each do |file|
+pattern = RuboCop::NodePattern.new(pattern)
+
+files.each do |file|
   processed_source = Rubocopular.parse_source(file)
   results = match(pattern, processed_source.ast)
   results.each do |result|

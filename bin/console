@@ -22,4 +22,9 @@ def test pattern, code
   Rubocopular.test pattern, code
 end
 
+def r
+	load 'lib/rubocopular.rb'
+  load 'bin/console'
+end
+
 Pry.start

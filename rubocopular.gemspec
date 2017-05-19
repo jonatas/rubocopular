@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.14'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rubocop', '~> 0.47.1'
+  spec.add_development_dependency 'rubocop', '~> 0.48.1'
   spec.add_development_dependency 'coderay', '~> 1.1.1'
   spec.add_development_dependency 'pry'
 end

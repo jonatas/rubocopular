@@ -128,30 +128,39 @@ You can also do like a "grep" using `bin/search`:
 
 Trying it in this project:
 
-    $ bin/search '(const ... )' 'lib/*.rb'                                                                                                                      11:56:17
+    $ bin/search '(const ... )' lib/*.rb
 
 It will output something like:
 
 ```
-Rubocopular
-RuboCop::ProcessedSource
-String
-RuboCop::NodePattern
-RuboCop::NodePattern
+lib/rubocopular.rb:5: Rubocopular
+lib/rubocopular.rb:7: RuboCop::ProcessedSource
+lib/rubocopular.rb:11: RuboCop::ProcessedSource
+lib/rubocopular.rb:11: IO
+lib/rubocopular.rb:15: RuboCop::AST::Node
+lib/rubocopular.rb:16: RuboCop::NodePattern
+lib/rubocopular.rb:20: RuboCop::NodePattern
+lib/rubocopular.rb:24: RuboCop::AST::Node
 ```
 
 It prints nodes that matches with the current code:
 
-    $ bin/search '(lvar ... )' 'lib/*.rb'                                                                                                                       11:56:23
+    $ bin/search '(defs ... )' lib/*.rb
 
 ```
-code
-code
-code
-pattern
-code
-pattern
-code
+lib/rubocopular.rb:6: def self.node(code)
+    RuboCop::ProcessedSource.new(code.to_s, 2.3).ast
+  end
+lib/rubocopular.rb:10: def self.parse_source(path)
+    RuboCop::ProcessedSource.new(IO.read(path), 2.3, path)
+  end
+lib/rubocopular.rb:14: def self.test(pattern, code)
+    code = node(code) unless code.is_a?(RuboCop::AST::Node)
+    RuboCop::NodePattern.new(pattern).match(code)
+  end
+lib/rubocopular.rb:19: def self.inspect(pattern, code)
+    RuboCop::NodePattern.new(pattern.gsub(/(\.{3}|_)/, '$\1')).match(node(code))
+  end
 ```
 
 ## Development
